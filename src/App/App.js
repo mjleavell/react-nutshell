@@ -96,6 +96,7 @@ class App extends React.Component {
         <BrowserRouter>
           <React.Fragment>
             <MyNavbar isAuthed={authed} logoutClickEvent={logoutClickEvent} />
+            <div className="container">
               <div className="row">
                 <Switch>
                   {/* we are exactly matching the path on the forward slash */}
@@ -109,6 +110,7 @@ class App extends React.Component {
                   <PublicRoute path='/auth' component={Auth} authed={authed} />
                 </Switch>
               </div>
+            </div>
           </React.Fragment>
         </BrowserRouter>
       </div>
