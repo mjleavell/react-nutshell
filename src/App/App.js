@@ -14,6 +14,11 @@ import connection from '../helpers/data/connection';
 import MyNavbar from '../components/MyNavbar/MyNavbar';
 import Auth from '../components/pages/Auth/Auth';
 import Home from '../components/pages/Home/Home';
+import Friends from '../components/pages/Friends/Friends';
+import Articles from '../components/pages/Articles/Articles';
+import Weather from '../components/pages/Weather/Weather';
+import Messages from '../components/pages/Messages/Messages';
+import Events from '../components/pages/Events/Events';
 import './App.scss';
 import authRequests from '../helpers/data/authRequests';
 
@@ -84,14 +89,19 @@ class App extends React.Component {
         <BrowserRouter>
           <React.Fragment>
             <MyNavbar isAuthed={authed} logoutClickEvent={logoutClickEvent} />
-            <div className="row">
-              <Switch>
-                {/* we are exactly matching the path on the forward slash */}
-                <PrivateRoute path='/' exact component={Home} authed={authed} />
-                <PrivateRoute path='/home' component={Home} authed={authed} />
-                <PublicRoute path='/auth' component={Auth} authed={authed} />
-              </Switch>
-            </div>
+              <div className="row">
+                <Switch>
+                  {/* we are exactly matching the path on the forward slash */}
+                  <PrivateRoute path='/' exact component={Home} authed={authed} />
+                  <PrivateRoute path='/home' component={Home} authed={authed} />
+                  <PrivateRoute path='/friends' component={Friends} authed={authed} />
+                  <PrivateRoute path='/articles' component={Articles} authed={authed} />
+                  <PrivateRoute path='/weather' component={Weather} authed={authed} />
+                  <PrivateRoute path='/events' component={Events} authed={authed} />
+                  <PrivateRoute path='/messages' component={Messages} authed={authed} />
+                  <PublicRoute path='/auth' component={Auth} authed={authed} />
+                </Switch>
+              </div>
           </React.Fragment>
         </BrowserRouter>
       </div>
