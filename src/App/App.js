@@ -26,6 +26,7 @@ import authRequests from '../helpers/data/authRequests';
 const PublicRoute = ({ component: Component, authed, ...rest }) => {
   // if we are not authenticated, we wnat to see the login component. if we are, we want to be redirect ot homepage
   const routeChecker = props => (authed === false
+    // ... copying all of the data into the component
     ? (<Component {...props} />)
     : (<Redirect to={{ pathname: '/home', state: { from: props.location } }} />));
   // props ends up coming from the render method within the Route
