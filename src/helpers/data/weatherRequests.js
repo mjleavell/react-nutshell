@@ -24,6 +24,7 @@ const getWeather = uid => new Promise((resolve, reject) => {
 
 const deleteWeather = weatherId => axios.delete(`${firebaseUrl}/weather/${weatherId}.json`);
 
+// gives us the weatherOBject for the isCurrent = true
 const getIsCurrent = uid => new Promise((resolve, reject) => {
   axios.get(`${firebaseUrl}/weather.json?orderBy="uid"&equalTo="${uid}"`)
     .then((result) => {

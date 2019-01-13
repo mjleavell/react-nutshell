@@ -22,14 +22,10 @@ import Events from '../components/pages/Events/Events';
 import './App.scss';
 import authRequests from '../helpers/data/authRequests';
 
-// stateless function
 const PublicRoute = ({ component: Component, authed, ...rest }) => {
-  // if we are not authenticated, we wnat to see the login component. if we are, we want to be redirect ot homepage
   const routeChecker = props => (authed === false
-    // ... copying all of the data into the component
     ? (<Component {...props} />)
     : (<Redirect to={{ pathname: '/home', state: { from: props.location } }} />));
-  // props ends up coming from the render method within the Route
   return <Route {...rest} render={props => routeChecker(props)} />;
 };
 
@@ -45,20 +41,24 @@ class App extends React.Component {
   state = {
     authed: false,
     pendingUser: true,
+    uid: '',
   }
 
   componentDidMount() {
     connection();
+
     this.removeListener = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({
           authed: true,
           pendingUser: false,
+          uid: user.uid,
         });
       } else {
         this.setState({
           authed: false,
           pendingUser: false,
+          uid: '',
         });
       }
     });
@@ -68,30 +68,21 @@ class App extends React.Component {
     this.removeListener();
   }
 
-  // isAuthenticated = () => {
-  //   this.setState({ authed: true });
-  // }
-
   render() {
-    const { authed, pendingUser } = this.state;
+    const { authed, pendingUser, uid } = this.state;
 
     const logoutClickEvent = () => {
       authRequests.logoutUser();
-      this.setState({ authed: false });
+      this.setState({
+        authed: false,
+        uid: '',
+      });
     };
 
     if (pendingUser) {
       return null;
     }
 
-    // if (!authed) {
-    //   return (
-    //     <div className="App">
-    //       <MyNavbar isAuthed={authed} logoutClickEvent={logoutClickEvent} />
-    //       <Auth isAuthenticated={this.isAuthenticated} />
-    //     </div>
-    //   );
-    // }
     return (
       <div className="App">
         <BrowserRouter>
@@ -100,12 +91,11 @@ class App extends React.Component {
             <div className="container">
               <div className="row">
                 <Switch>
-                  {/* we are exactly matching the path on the forward slash */}
                   <PrivateRoute path='/' exact component={Home} authed={authed} />
                   <PrivateRoute path='/home' component={Home} authed={authed} />
                   <PrivateRoute path='/friends' component={Friends} authed={authed} />
                   <PrivateRoute path='/articles' component={Articles} authed={authed} />
-                  <PrivateRoute path='/weather' component={Weather} authed={authed} />
+                  <PrivateRoute path='/weather' component={() => <Weather uid={uid} />} authed={authed} />
                   <PrivateRoute path='/events' component={Events} authed={authed} />
                   <PrivateRoute path='/messages' component={Messages} authed={authed} />
                   <PublicRoute path='/auth' component={Auth} authed={authed} />
