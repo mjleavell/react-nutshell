@@ -3,6 +3,7 @@ import {
   Col,
   Row,
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import WeatherItems from '../WeatherItems/WeatherItems';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import weatherRequests from '../../../helpers/data/weatherRequests';
@@ -15,8 +16,12 @@ class Weather extends React.Component {
     isCurrent: {},
   }
 
+  static propTypes = {
+    uid: PropTypes.string,
+  }
+
   componentDidMount() {
-    weatherRequests.getWeather(localStorage.getItem('uid'))
+    weatherRequests.getWeather(this.props.uid)
       .then((weather) => {
         this.setState({ weather });
       })
