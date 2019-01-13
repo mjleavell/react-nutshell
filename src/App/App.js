@@ -21,7 +21,6 @@ import Messages from '../components/pages/Messages/Messages';
 import Events from '../components/pages/Events/Events';
 import './App.scss';
 import authRequests from '../helpers/data/authRequests';
-import weatherRequests from '../helpers/data/weatherRequests';
 
 const PublicRoute = ({ component: Component, authed, ...rest }) => {
   const routeChecker = props => (authed === false
@@ -43,7 +42,6 @@ class App extends React.Component {
     authed: false,
     pendingUser: true,
     uid: '',
-    weather: [],
   }
 
   componentDidMount() {
@@ -64,7 +62,6 @@ class App extends React.Component {
           pendingUser: false,
         });
       }
-      this.getWeatherLocations();
     });
   }
 
@@ -79,19 +76,10 @@ class App extends React.Component {
       uid: userId,
     });
     localStorage.setItem('uid', userId);
-    this.getWeatherLocations();
-  }
-
-  getWeatherLocations = () => {
-    const userId = localStorage.getItem('uid');
-    weatherRequests.getWeather(userId).then((weather) => {
-      this.setState({ weather });
-    })
-      .catch(err => console.error('error with weather GET', err));
   }
 
   render() {
-    const { authed, pendingUser, weather } = this.state;
+    const { authed, pendingUser } = this.state;
 
     const logoutClickEvent = () => {
       authRequests.logoutUser();
@@ -118,7 +106,7 @@ class App extends React.Component {
                   <PrivateRoute path='/home' component={Home} authed={authed} />
                   <PrivateRoute path='/friends' component={Friends} authed={authed} />
                   <PrivateRoute path='/articles' component={Articles} authed={authed} />
-                  <PrivateRoute path='/weather' component={() => <Weather weather={weather} />} authed={authed} />
+                  <PrivateRoute path='/weather' component={Weather} authed={authed} />
                   <PrivateRoute path='/events' component={Events} authed={authed} />
                   <PrivateRoute path='/messages' component={Messages} authed={authed} />
                   <PublicRoute path='/auth' component={Auth} authed={authed} />

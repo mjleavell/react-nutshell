@@ -1,16 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import weatherShape from '../../../helpers/propz/weatherShape';
-import './Weather.scss';
 import WeatherItems from '../WeatherItems/WeatherItems';
+import weatherRequests from '../../../helpers/data/weatherRequests';
+import './Weather.scss';
 
 class Weather extends React.Component {
-  static propTypes = {
-    weather: PropTypes.arrayOf(weatherShape),
+  state = {
+    weather: [],
+  }
+
+  componentDidMount() {
+    weatherRequests.getWeather(localStorage.getItem('uid'))
+      .then((weather) => {
+        this.setState({ weather });
+      })
+      .catch(err => console.error('error with weather GET', err));
   }
 
   render() {
-    const { weather } = this.props;
+    const { weather } = this.state;
 
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
