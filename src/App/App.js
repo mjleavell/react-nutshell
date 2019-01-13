@@ -44,6 +44,7 @@ class App extends React.Component {
     pendingUser: true,
     uid: '',
     weather: [],
+    isCurrent: {},
   }
 
   componentDidMount() {
@@ -90,6 +91,15 @@ class App extends React.Component {
       .catch(err => console.error('error with weather GET', err));
   }
 
+  getCurrentWeather = () => {
+    const userId = localStorage.getItem('uid');
+    weatherRequests.getIsCurrent(userId).then((isCurrent) => {
+      console.log(isCurrent);
+      this.setState({ isCurrent });
+    })
+      .catch(err => console.error('error with weather GET', err));
+  }
+
   render() {
     const { authed, pendingUser, weather } = this.state;
 
@@ -118,7 +128,7 @@ class App extends React.Component {
                   <PrivateRoute path='/home' component={Home} authed={authed} />
                   <PrivateRoute path='/friends' component={Friends} authed={authed} />
                   <PrivateRoute path='/articles' component={Articles} authed={authed} />
-                  <PrivateRoute path='/weather' component={() => <Weather weather={weather} />} authed={authed} />
+                  <PrivateRoute path='/weather' component={() => <Weather weather={weather} getCurrentWeather={this.getCurrentWeather} />} authed={authed} />
                   <PrivateRoute path='/events' component={Events} authed={authed} />
                   <PrivateRoute path='/messages' component={Messages} authed={authed} />
                   <PublicRoute path='/auth' component={Auth} authed={authed} />
