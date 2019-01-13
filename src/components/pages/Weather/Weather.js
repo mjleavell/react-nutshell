@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import WeatherItems from '../WeatherItems/WeatherItems';
 import weatherRequests from '../../../helpers/data/weatherRequests';
 import './Weather.scss';
@@ -8,8 +9,12 @@ class Weather extends React.Component {
     weather: [],
   }
 
+  static propTypes = {
+    uid: PropTypes.string,
+  }
+
   componentDidMount() {
-    weatherRequests.getWeather(localStorage.getItem('uid'))
+    weatherRequests.getWeather(this.props.uid)
       .then((weather) => {
         this.setState({ weather });
       })

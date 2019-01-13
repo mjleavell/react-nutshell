@@ -48,18 +48,17 @@ class App extends React.Component {
     connection();
 
     this.removeListener = firebase.auth().onAuthStateChanged((user) => {
-      const userId = localStorage.getItem('uid');
       if (user) {
         this.setState({
           authed: true,
           pendingUser: false,
-          uid: userId,
+          uid: user.uid,
         });
-        this.getUid();
       } else {
         this.setState({
           authed: false,
           pendingUser: false,
+          uid: '',
         });
       }
     });
@@ -69,21 +68,11 @@ class App extends React.Component {
     this.removeListener();
   }
 
-  getUid = () => {
-    const userId = authRequests.getCurrentUid();
-    this.setState({
-      authed: true,
-      uid: userId,
-    });
-    localStorage.setItem('uid', userId);
-  }
-
   render() {
-    const { authed, pendingUser } = this.state;
+    const { authed, pendingUser, uid } = this.state;
 
     const logoutClickEvent = () => {
       authRequests.logoutUser();
-      localStorage.clear();
       this.setState({
         authed: false,
         uid: '',
@@ -106,7 +95,7 @@ class App extends React.Component {
                   <PrivateRoute path='/home' component={Home} authed={authed} />
                   <PrivateRoute path='/friends' component={Friends} authed={authed} />
                   <PrivateRoute path='/articles' component={Articles} authed={authed} />
-                  <PrivateRoute path='/weather' component={Weather} authed={authed} />
+                  <PrivateRoute path='/weather' component={() => <Weather uid={uid} />} authed={authed} />
                   <PrivateRoute path='/events' component={Events} authed={authed} />
                   <PrivateRoute path='/messages' component={Messages} authed={authed} />
                   <PublicRoute path='/auth' component={Auth} authed={authed} />
