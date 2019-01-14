@@ -51,6 +51,17 @@ class Weather extends React.Component {
       .catch(err => console.error('error with current weather GET', err));
   }
 
+  deleteOne = (weatherId) => {
+    weatherRequests.deleteWeather(weatherId).then(() => {
+      weatherRequests.getWeather(this.props.uid)
+        .then((weather) => {
+          this.setState({ weather });
+        });
+    })
+      .catch(err => console.error('error with delete single', err));
+  }
+
+
   formSubmitEvent = (newWeather) => {
     weatherRequests.postRequest(newWeather).then(() => {
       weatherRequests.getWeather(this.props.uid)
@@ -71,8 +82,9 @@ class Weather extends React.Component {
 
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
-        weather={weatherItem}
         key={weatherItem.id}
+        weather={weatherItem}
+        deleteWeather={this.deleteOne}
       />
     ));
 
