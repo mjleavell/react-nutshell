@@ -51,6 +51,16 @@ class Weather extends React.Component {
       .catch(err => console.error('error with current weather GET', err));
   }
 
+  formSubmitEvent = (newWeather) => {
+    weatherRequests.postRequest(newWeather).then(() => {
+      weatherRequests.getWeather(this.props.uid)
+        .then((weather) => {
+          this.setState({ weather });
+        });
+    })
+      .catch(err => console.error('error with weather post', err));
+  }
+
   render() {
     const {
       weather,
@@ -70,7 +80,7 @@ class Weather extends React.Component {
       <div className='weather container'>
         <Row>
           <Col>
-            <WeatherForm />
+            <WeatherForm onSubmit={this.formSubmitEvent} />
           </Col>
           <Col>
             {weatherItemComponents}
