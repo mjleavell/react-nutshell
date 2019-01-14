@@ -1,4 +1,6 @@
+/* eslint-disable max-len */
 import React from 'react';
+// import { isEmpty } from 'firebase/app';
 import {
   Col,
   Row,
@@ -14,6 +16,8 @@ class Weather extends React.Component {
   state = {
     weather: [],
     isCurrent: {},
+    weatherData: {},
+    weatherObject: {},
   }
 
   static propTypes = {
@@ -27,24 +31,33 @@ class Weather extends React.Component {
       })
       .catch(err => console.error('error with weather GET', err));
 
-    this.getCurrentWeather();
+    weatherRequests.getIsCurrent(this.props.uid)
+      .then((isCurrent) => {
+        // if i dont have the if statement, i get errors bc isCurrent.id and isCurrent.city are undefined
+        if (isCurrent !== undefined) {
+          this.getCurrentWeather(isCurrent.city, isCurrent.state);
+          this.setState({ isCurrent });
+        }
+      })
+      .catch(err => console.error('error with current weather GET', err));
   }
 
-  getCurrentWeather = () => {
-    weatherRequests.getIsCurrent(localStorage.getItem('uid'))
-      .then((isCurrent) => {
-        this.setState({ isCurrent });
-        weatherbitRequests.getForecast(isCurrent.city, isCurrent.state)
-          .then((weatherData) => {
-            console.log(weatherData);
-            this.setState({ weatherData });
-          });
+  getCurrentWeather = (currentCity, currentState) => {
+    weatherbitRequests.getForecast(currentCity, currentState)
+      .then((weatherData) => {
+        this.setState({ weatherObject: weatherData.weather });
+        this.setState({ weatherData });
       })
       .catch(err => console.error('error with current weather GET', err));
   }
 
   render() {
-    const { weather, isCurrent, weatherData } = this.state;
+    const {
+      weather,
+      isCurrent,
+      weatherData,
+      weatherObject,
+    } = this.state;
 
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
@@ -63,8 +76,8 @@ class Weather extends React.Component {
             <WeatherCurrent
               key={isCurrent.id}
               isCurrent={isCurrent}
-              getCurrentWeather={this.getCurrentWeather}
               weatherData={weatherData}
+              weatherObject={weatherObject}
             />
           </Col>
         </Row>

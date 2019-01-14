@@ -5,9 +5,8 @@ import {
   CardImg,
   CardText,
   CardBody,
+  CardHeader,
   CardTitle,
-  Row,
-  Col,
 } from 'reactstrap';
 import './WeatherCurrent.scss';
 
@@ -15,18 +14,32 @@ class WeatherCurrent extends React.Component {
   static propTypes = {
     isCurrent: PropTypes.object,
     weatherData: PropTypes.object,
+    weatherObject: PropTypes.object,
   }
 
   render() {
-    const { isCurrent, weatherData } = this.props;
+    const { weatherData, weatherObject } = this.props;
+    if (Object.keys(weatherData).length === 0) {
+      return (
+        <div className='weather-current'>
+          <Card>
+            <CardHeader className="text-danger" tag="h3">Select location</CardHeader>
+            <CardBody text="center">
+              <CardTitle tag="h4" className="text-danger my-3"><i className="fas fa-exclamation fa-3x"></i></CardTitle>
+            </CardBody>
+          </Card>
+        </div>
+      );
+    }
     return (
       <div className='weather-current'>
-        <h4>weather current</h4>
         <Card>
-          <CardImg top width="80%" src='' alt='' />
-          <CardBody>
-            <CardTitle></CardTitle>
-            <CardText></CardText>
+          <CardHeader tag="h3">{weatherData.city_name}, {weatherData.state_code}</CardHeader>
+          <CardImg top width="80%" src={`https://www.weatherbit.io/static/img/icons/${weatherObject.icon}.png`} alt={weatherObject.description} />
+          <CardBody text="center">
+            <CardTitle>{weatherData.temp}°F</CardTitle>
+            <CardText>{weatherData.wind_cdir} {weatherData.wind_spd} mph</CardText>
+            <CardText>{weatherObject.description}</CardText>
           </CardBody>
         </Card>
       </div>
