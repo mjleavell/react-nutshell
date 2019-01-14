@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import React from 'react';
-// import { isEmpty } from 'firebase/app';
 import {
   Col,
   Row,
@@ -11,6 +10,7 @@ import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import weatherRequests from '../../../helpers/data/weatherRequests';
 import weatherbitRequests from '../../../helpers/data/weatherbitRequests';
 import './Weather.scss';
+import WeatherForm from '../WeatherForm/WeatherForm';
 
 class Weather extends React.Component {
   state = {
@@ -69,6 +69,9 @@ class Weather extends React.Component {
     return (
       <div className='weather container'>
         <Row>
+          <Col>
+            <WeatherForm />
+          </Col>
           <Col>
             {weatherItemComponents}
           </Col>
