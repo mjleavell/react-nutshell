@@ -1,19 +1,36 @@
 import React from 'react';
-import { Input } from 'reactstrap';
+import {
+  Input,
+  // ButtonDropdown,
+  // DropdownToggle,
+  // DropdownMenu,
+  // option,
+} from 'reactstrap';
 import './WeatherForm.scss';
 
 class WeatherForm extends React.Component {
-  // static propTypes = {
-  //   weather: weatherShape,
-  // }
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      dropdownOpen: false,
+    };
+  }
+
+  toggle() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen,
+    });
+  }
 
   render() {
     // const { weather } = this.props;
     return (
       <div className='weather-form'>
-        <Input placeholder="City" />
-        <Input type="select">
-          <option value="">Select</option>
+        <h4 id="form-title">Add new location</h4>
+        <Input id="form-city" placeholder="City" />
+        <Input type="select" id="form-state">
           <option>AL</option>
           <option>AK</option>
           <option>AZ</option>
