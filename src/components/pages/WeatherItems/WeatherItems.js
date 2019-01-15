@@ -11,25 +11,24 @@ import weatherShape from '../../../helpers/propz/weatherShape';
 
 class WeatherItems extends React.Component {
   static propTypes = {
-    weather: weatherShape,
+    singleWeatherLocation: weatherShape,
     deleteWeather: PropTypes.func,
   }
 
   deleteEvent = (e) => {
     e.preventDefault();
-    const { deleteWeather, weather } = this.props;
-    console.log(weather.id);
-    deleteWeather(weather.id);
+    const { deleteWeather, singleWeatherLocation } = this.props;
+    deleteWeather(singleWeatherLocation.id);
   }
 
   render() {
-    const { weather } = this.props;
+    const { singleWeatherLocation } = this.props;
     return (
       <div className='weather-items'>
         <Card>
           <Row>
             <Col xs='10'>
-              <h4>{weather.city}, {weather.state}</h4>
+              <h4>{singleWeatherLocation.city}, {singleWeatherLocation.state}</h4>
             </Col>
             <Col xs='2'>
               <Button size="sm" color="danger" onClick={this.deleteEvent}><i className="fas fa-trash-alt"></i></Button>
