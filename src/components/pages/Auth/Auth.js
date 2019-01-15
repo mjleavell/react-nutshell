@@ -13,7 +13,7 @@ class Auth extends React.Component {
     authRequests.authenticate().then(() => {
       this.props.history.push('/home');
     })
-      .catch(err => console.err('authenticate user err', err));
+      .catch(err => console.error('authenticate user err', err));
   }
 
   render() {

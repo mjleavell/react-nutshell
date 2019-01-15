@@ -1,6 +1,11 @@
 import React from 'react';
+import {
+  Col,
+  Row,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import WeatherItems from '../WeatherItems/WeatherItems';
+import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import weatherRequests from '../../../helpers/data/weatherRequests';
 import './Weather.scss';
 
@@ -23,6 +28,7 @@ class Weather extends React.Component {
 
   render() {
     const { weather } = this.state;
+    const { uid } = this.props;
 
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
@@ -32,10 +38,15 @@ class Weather extends React.Component {
     ));
 
     return (
-      <div className='weather'>
-        <div id='weather-items'>
-          {weatherItemComponents}
-        </div>
+      <div className='weather container'>
+        <Row>
+          <Col>
+            {weatherItemComponents}
+          </Col>
+          <Col>
+            <WeatherCurrent uid={uid} />
+          </Col>
+        </Row>
       </div>
     );
   }
