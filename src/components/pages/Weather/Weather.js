@@ -65,7 +65,7 @@ class Weather extends React.Component {
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
         key={weatherItem.id}
-        weather={weatherItem}
+        singleWeatherLocation={weatherItem}
         deleteWeather={this.deleteOne}
         updateCurrentWeather={this.updateCurrentWeather}
       />
