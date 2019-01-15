@@ -16,7 +16,7 @@ class Weather extends React.Component {
   state = {
     weather: [],
     isCurrent: {},
-    weatherData: {},
+    currentWeather: {},
     weatherObject: {},
   }
 
@@ -45,8 +45,17 @@ class Weather extends React.Component {
   getCurrentWeather = (currentCity, currentState) => {
     weatherbitRequests.getForecast(currentCity, currentState)
       .then((weatherData) => {
-        this.setState({ weatherObject: weatherData.weather });
-        this.setState({ weatherData });
+        this.setState({
+          currentWeather: {
+            icon: weatherData.weather.icon,
+            description: weatherData.weather.description,
+            city: weatherData.city_name,
+            state: weatherData.state_code,
+            windSpeed: weatherData.wind_spd,
+            windDirection: weatherData.wind_cdir,
+            temp: weatherData.temp,
+          },
+        });
       })
       .catch(err => console.error('error with current weather GET', err));
   }
@@ -59,6 +68,16 @@ class Weather extends React.Component {
         });
     })
       .catch(err => console.error('error with delete single', err));
+  }
+
+  updateCurrentWeather = (weatherId, isCurrentObject) => {
+    weatherRequests.patchIsCurrent(weatherId, isCurrentObject).then(() => {
+      weatherRequests.getWeather(this.props.uid)
+        .then((weather) => {
+          this.setState({ weather });
+        });
+    })
+      .catch(err => console.error('error with update is current', err));
   }
 
 
@@ -76,15 +95,18 @@ class Weather extends React.Component {
     const {
       weather,
       isCurrent,
-      weatherData,
+      currentWeather,
       weatherObject,
     } = this.state;
 
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
         key={weatherItem.id}
+        isCurrent={isCurrent}
         weather={weatherItem}
         deleteWeather={this.deleteOne}
+        updateCurrentWeather={this.updateCurrentWeather}
+
       />
     ));
 
@@ -101,7 +123,7 @@ class Weather extends React.Component {
             <WeatherCurrent
               key={isCurrent.id}
               isCurrent={isCurrent}
-              weatherData={weatherData}
+              currentWeather={currentWeather}
               weatherObject={weatherObject}
             />
           </Col>

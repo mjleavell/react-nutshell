@@ -13,6 +13,8 @@ class WeatherItems extends React.Component {
   static propTypes = {
     weather: weatherShape,
     deleteWeather: PropTypes.func,
+    updateCurrentWeather: PropTypes.func,
+    isCurrent: PropTypes.object,
   }
 
   deleteEvent = (e) => {
@@ -20,6 +22,14 @@ class WeatherItems extends React.Component {
     const { deleteWeather, weather } = this.props;
     console.log(weather.id);
     deleteWeather(weather.id);
+  }
+
+  updateIsCurrent = (e) => {
+    e.preventDefault();
+    const { updateCurrentWeather, weather, isCurrent } = this.props;
+    console.log(weather.id);
+    const isCurrentBool = isCurrent.isCurrent;
+    updateCurrentWeather(weather.id, isCurrent);
   }
 
   render() {
@@ -33,6 +43,7 @@ class WeatherItems extends React.Component {
             </Col>
             <Col xs='2'>
               <Button size="sm" color="danger" onClick={this.deleteEvent}><i className="fas fa-trash-alt"></i></Button>
+              <Button size="sm" color="info" onClick={this.updateIsCurrent}><i className="fas fa-star-of-life"></i></Button>
             </Col>
           </Row>
         </Card>
