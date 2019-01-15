@@ -14,22 +14,22 @@ class WeatherItems extends React.Component {
     weather: weatherShape,
     deleteWeather: PropTypes.func,
     updateCurrentWeather: PropTypes.func,
-    isCurrent: PropTypes.object,
+    // isCurrent: PropTypes.object,
   }
 
   deleteEvent = (e) => {
     e.preventDefault();
     const { deleteWeather, weather } = this.props;
-    console.log(weather.id);
     deleteWeather(weather.id);
   }
 
   updateIsCurrent = (e) => {
     e.preventDefault();
-    const { updateCurrentWeather, weather, isCurrent } = this.props;
-    console.log(weather.id);
-    const isCurrentBool = isCurrent.isCurrent;
-    updateCurrentWeather(weather.id, isCurrent);
+    const { updateCurrentWeather, weather } = this.props;
+    console.log(e.target.id);
+    const newIsCurrent = () => this.setState({ isCurrent: true });
+    const isCurrentBool = newIsCurrent(weather.id);
+    updateCurrentWeather(weather.id, isCurrentBool);
   }
 
   render() {

@@ -8,17 +8,52 @@ import {
   CardHeader,
   CardTitle,
 } from 'reactstrap';
+import weatherRequests from '../../../helpers/data/weatherRequests';
+import weatherbitRequests from '../../../helpers/data/weatherbitRequests';
 import './WeatherCurrent.scss';
 
 class WeatherCurrent extends React.Component {
+  state = {
+    isCurrent: {},
+    currentWeather: {},
+  }
+
   static propTypes = {
-    isCurrent: PropTypes.object,
-    weatherData: PropTypes.object,
-    currentWeather: PropTypes.object,
+    uid: PropTypes.string,
+  }
+
+  componentDidMount() {
+    weatherRequests.getIsCurrent(this.props.uid)
+      .then((isCurrent) => {
+        if (isCurrent !== undefined) {
+          this.getCurrentWeather(isCurrent.city, isCurrent.state);
+          this.setState({ isCurrent });
+        }
+      })
+      .catch(err => console.error('error with current weather GET', err));
+  }
+
+  getCurrentWeather = (currentCity, currentState) => {
+    weatherbitRequests.getForecast(currentCity, currentState)
+      .then((weatherData) => {
+        this.setState({
+          currentWeather: {
+            icon: weatherData.weather.icon,
+            description: weatherData.weather.description,
+            city: weatherData.city_name,
+            state: weatherData.state_code,
+            windSpeed: weatherData.wind_spd,
+            windDirection: weatherData.wind_cdir,
+            temp: weatherData.temp,
+          },
+        });
+      })
+      .catch(err => console.error('error with current weather GET', err));
   }
 
   render() {
-    const { weatherData, currentWeather } = this.props;
+    const { currentWeather } = this.state;
+
     if (Object.keys(currentWeather).length === 0) {
       return (
         <div className='weather-current'>
