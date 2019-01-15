@@ -8,6 +8,7 @@ import WeatherItems from '../WeatherItems/WeatherItems';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import weatherRequests from '../../../helpers/data/weatherRequests';
 import './Weather.scss';
+import WeatherForm from '../WeatherForm/WeatherForm';
 
 class Weather extends React.Component {
   state = {
@@ -26,6 +27,16 @@ class Weather extends React.Component {
       .catch(err => console.error('error with weather GET', err));
   }
 
+  formSubmitEvent = (newWeather) => {
+    weatherRequests.postRequest(newWeather).then(() => {
+      weatherRequests.getWeather(this.props.uid)
+        .then((weather) => {
+          this.setState({ weather });
+        });
+    })
+      .catch(err => console.error('error with weather post', err));
+  }
+
   render() {
     const { weather } = this.state;
     const { uid } = this.props;
@@ -40,6 +51,9 @@ class Weather extends React.Component {
     return (
       <div className='weather container'>
         <Row>
+          <Col>
+            <WeatherForm onSubmit={this.formSubmitEvent} />
+          </Col>
           <Col>
             {weatherItemComponents}
           </Col>
