@@ -1,4 +1,13 @@
 .weather-current {
+  .card {
+    margin-top: 1rem;
+    width: 15rem;
+    padding-bottom: 1rem;
+  }
+  .card-img {
+    width: 70%;
+    margin: 0 auto 0 auto;
+  }
   .card-header {
     text-align: center;
   }
@@ -7,9 +16,11 @@
     text-align: center;
   }
   .card-title{
-    font-size: 2.5rem;
+    font-size: 1.5rem;
+    margin: 0;
   }
   .card-text{
-    font-size: 1.25rem;
+    font-size: 1rem;
+    margin: 0;
   }
 }

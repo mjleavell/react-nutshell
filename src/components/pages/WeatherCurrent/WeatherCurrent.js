@@ -14,12 +14,12 @@ import './WeatherCurrent.scss';
 
 class WeatherCurrent extends React.Component {
   state = {
-    isCurrent: {},
     currentWeather: {},
   }
 
   static propTypes = {
     uid: PropTypes.string,
+    currentWeatherId: PropTypes.string,
   }
 
   componentDidMount() {
@@ -27,27 +27,35 @@ class WeatherCurrent extends React.Component {
       .then((isCurrent) => {
         if (isCurrent !== undefined) {
           this.getCurrentWeather(isCurrent.city, isCurrent.state);
-          this.setState({ isCurrent });
         }
       })
       .catch(err => console.error('error with current weather GET', err));
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.currentWeatherId !== prevProps.currentWeatherId) {
+      weatherRequests.getIsCurrent(this.props.uid).then((newIsCurrent) => {
+        if (newIsCurrent !== undefined) {
+          this.getCurrentWeather(newIsCurrent.city, newIsCurrent.state);
+        }
+      });
+    }
+  }
+
   getCurrentWeather = (currentCity, currentState) => {
-    weatherbitRequests.getForecast(currentCity, currentState)
-      .then((weatherData) => {
-        this.setState({
-          currentWeather: {
-            icon: weatherData.weather.icon,
-            description: weatherData.weather.description,
-            city: weatherData.city_name,
-            state: weatherData.state_code,
-            windSpeed: weatherData.wind_spd,
-            windDirection: weatherData.wind_cdir,
-            temp: weatherData.temp,
-          },
-        });
-      })
+    weatherbitRequests.getForecast(currentCity, currentState).then((weatherData) => {
+      this.setState({
+        currentWeather: {
+          icon: weatherData.weather.icon,
+          description: weatherData.weather.description,
+          city: weatherData.city_name,
+          state: weatherData.state_code,
+          windSpeed: weatherData.wind_spd,
+          windDirection: weatherData.wind_cdir,
+          temp: weatherData.temp,
+        },
+      });
+    })
       .catch(err => console.error('error with current weather GET', err));
   }
 
@@ -69,8 +77,8 @@ class WeatherCurrent extends React.Component {
     return (
       <div className='weather-current'>
         <Card>
-          <CardHeader tag="h3">{currentWeather.city}, {currentWeather.state}</CardHeader>
-          <CardImg top width="80%" src={`https://www.weatherbit.io/static/img/icons/${currentWeather.icon}.png`} alt={currentWeather.description} />
+          <CardHeader tag="h4">{currentWeather.city}, {currentWeather.state}</CardHeader>
+          <CardImg src={`https://www.weatherbit.io/static/img/icons/${currentWeather.icon}.png`} alt={currentWeather.description} />
           <CardBody text="center">
             <CardTitle>{currentWeather.temp}°F</CardTitle>
             <CardText>{currentWeather.windDirection} {currentWeather.windSpeed} mph</CardText>

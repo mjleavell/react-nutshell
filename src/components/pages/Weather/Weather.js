@@ -13,6 +13,7 @@ import WeatherForm from '../WeatherForm/WeatherForm';
 class Weather extends React.Component {
   state = {
     weather: [],
+    currentWeatherId: '',
   }
 
   static propTypes = {
@@ -20,10 +21,14 @@ class Weather extends React.Component {
   }
 
   componentDidMount() {
-    weatherRequests.getWeather(this.props.uid)
-      .then((weather) => {
-        this.setState({ weather });
-      })
+    weatherRequests.getWeather(this.props.uid).then((weather) => {
+      this.setState({ weather });
+      const currentWeather = weather.filter(weatherObject => weatherObject.isCurrent === true);
+      if (Object.keys(currentWeather).length !== 0) {
+        const currentWeatherId = currentWeather[0].id;
+        this.setState({ currentWeatherId });
+      }
+    })
       .catch(err => console.error('error with weather GET', err));
   }
 
@@ -42,11 +47,14 @@ class Weather extends React.Component {
       weatherRequests.getWeather(this.props.uid)
         .then((weather) => {
           this.setState({ weather });
+          const currentWeather = weather.filter(weatherObject => weatherObject.isCurrent === true);
+          const currentWeatherId = currentWeather[0].id;
+          this.setState({ currentWeatherId });
+          // }
         });
     })
       .catch(err => console.error('error with update is current', err));
   }
-
 
   formSubmitEvent = (newWeather) => {
     weatherRequests.postRequest(newWeather).then(() => {
@@ -59,15 +67,17 @@ class Weather extends React.Component {
   }
 
   render() {
-    const { weather } = this.state;
+    const { weather, currentWeatherId } = this.state;
     const { uid } = this.props;
 
     const weatherItemComponents = weather.map(weatherItem => (
       <WeatherItems
+        uid={uid}
         key={weatherItem.id}
         singleWeatherLocation={weatherItem}
         deleteWeather={this.deleteOne}
         updateCurrentWeather={this.updateCurrentWeather}
+        changeIsCurrentToTrue={this.changeIsCurrentToTrue}
       />
     ));
 
@@ -81,7 +91,7 @@ class Weather extends React.Component {
             {weatherItemComponents}
           </Col>
           <Col>
-            <WeatherCurrent uid={uid} />
+            <WeatherCurrent uid={uid} currentWeatherId={currentWeatherId} />
           </Col>
         </Row>
       </div>
